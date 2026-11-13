@@ -131,8 +131,8 @@ export class MatterHost implements DeviceHost {
         serialNumber: clip(this.box.id),
         uniqueId: uniqueIdFor(this.box.id, "node"),
         hardwareVersion: 1,
-        softwareVersion: 1,
-        softwareVersionString: "0.1.0",
+        softwareVersion: 2,
+        softwareVersionString: "0.1.1",
       },
     });
     const aggregator = new Endpoint(AggregatorEndpoint, { id: "bridge", number: 1 });
