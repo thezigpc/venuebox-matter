@@ -22,7 +22,8 @@ change or disappear in the apps. Each device keeps its Matter endpoint number (s
    device"), or type the 11-digit code. The app warns that the device isn't certified: that's
    expected, continue.
 3. **Pair another app** opens a new code for 15 minutes, so Alexa and Apple Home can both
-   control the box (Matter multi-admin).
+   control the box (Matter multi-admin). The box shows the minutes left and greys the code out
+   when it expires (box 0.15.4 and later).
 4. **Forget all pairings** removes the box from every app and makes a new code.
 
 ## Development
@@ -33,22 +34,32 @@ npm test                      # unit tests (node:test via tsx)
 npm run typecheck
 ```
 
-**Against the SDK's mock box:**
+**Against the SDK's mock box** (SDK 0.13.1), which also has test controls on its gateway:
 
 ```bash
-npx bargames mock-box .       # terminal 1: scenes and fake TVs on :7199
+npx bargames mock-box .       # terminal 1: scenes and fake TVs, core on :7199, gateway on :7080
 BG_CORE_URL=http://127.0.0.1:7199 BG_GAME_TOKEN=dev-token BG_DATA_DIR=./.data npm run dev
+
+U=localhost:7080/__bargames/dev/integration
+curl $U                                   # streams, the last report, the catalog
+curl -X POST $U/action/pair-another       # press a report button
+curl -X POST $U/drop                      # drop the stream (the bridge reconnects and reports again)
+curl -X PUT $U/catalog -H 'content-type: application/json' -d '{"scenes":[...],"tvs":[...]}'
+curl -X DELETE $U/catalog                 # back to the pretend lists
 ```
 
-**Against the fake core in `scripts/`**, which can also press report buttons, drop the stream
-and edit the catalog:
+If another project is running a mock box too, use `--port` and `--core-port`. The mock box
+prints the pairing code; that's expected.
+
+**Against the fake core in `scripts/`**, for what the mock box can't do: keep the box down for
+a while (the devices go unreachable), and refuse TV power for a TV that's offline or has no
+power control in the edited catalog (the switch goes back):
 
 ```bash
 npx tsx scripts/fake-core.ts                    # :7198
 BG_CORE_URL=http://127.0.0.1:7198 BG_GAME_TOKEN=dev-token BG_DATA_DIR=./.data npm run dev
-curl -X POST localhost:7198/dev/action/pair-another
 curl -X POST "localhost:7198/dev/down?s=20"
-curl localhost:7198/dev/report
+curl -X PUT localhost:7198/dev/catalog -d @catalog.json
 ```
 
 **A test controller without a phone** (matter.js, in `scripts/controller.ts`). Each name is

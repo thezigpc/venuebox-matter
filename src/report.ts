@@ -105,8 +105,10 @@ export function buildReport(s: BridgeStatus, now = Date.now()): IntegrationRepor
     r.pairing = {
       qr: s.window.qr,
       code: s.window.code,
-      note: `In the other app, add a Matter device and scan this code, or type the 11-digit code.${left ? ` It works for ${left}.` : ""}`,
+      note: "In the other app, add a Matter device and scan this code, or type the 11-digit code.",
     };
+    // Box 0.15.4+ counts down and greys the code out after this, even if we stop reporting.
+    if (s.window.closesAt) r.pairing.expiresAt = new Date(s.window.closesAt).toISOString();
   }
   return r;
 }

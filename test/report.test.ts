@@ -14,6 +14,8 @@ describe("report", () => {
     assert.equal(r.pairing?.qr, "MT:TEST");
     assert.equal(r.pairing?.code, "12345678901");
     assert.ok(r.pairing?.note);
+    // The first-setup code is kept open until someone pairs, so it has no expiry.
+    assert.equal(r.pairing?.expiresAt, undefined);
     assert.deepEqual(r.actions?.map((a) => a.id), ["reset"]);
     assert.deepEqual(r.details, [
       { label: "Scenes", value: "3" },
@@ -70,6 +72,7 @@ describe("report", () => {
     assert.equal(r.state, "ok");
     assert.match(r.message!, /open for 15 minutes/);
     assert.equal(r.pairing?.code, "12345678901");
+    assert.equal(r.pairing?.expiresAt, new Date(now + 15 * 60_000).toISOString());
   });
 
   it("stays within the SDK's limits (12 details, 4 actions)", () => {

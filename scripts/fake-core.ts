@@ -1,14 +1,18 @@
 /**
- * Dev tool: a fake box core for the integration API, with the knobs `bargames mock-box`
- * doesn't have yet (pressing a report button, dropping the stream, editing the catalog).
+ * Dev tool: a fake box core for the integration API. Use `bargames mock-box` first (SDK 0.13.1
+ * has controls for buttons, stream drops and catalog edits); this covers what it doesn't:
+ *   - the box staying down for a while (mock-box's drop reconnects at once), so the devices
+ *     sit unreachable;
+ *   - TV power answering from the edited catalog: an offline TV, or one without power
+ *     control, answers { ok: false }, which tests the switch going back.
  *
  *   npx tsx scripts/fake-core.ts            # listens on 127.0.0.1:7198, token dev-token
  *
  * Then, in other terminals:
  *   BG_CORE_URL=http://127.0.0.1:7198 BG_GAME_TOKEN=dev-token BG_DATA_DIR=./.data npm run dev
- *   curl -X POST localhost:7198/dev/action/pair-another     # press a button
  *   curl -X POST localhost:7198/dev/down?s=20               # box gone for 20 s
  *   curl -X PUT  localhost:7198/dev/catalog -d @catalog.json  # replace the catalog
+ *   curl -X POST localhost:7198/dev/action/pair-another     # press a button
  *   curl localhost:7198/dev/report                          # the last report
  */
 import { createServer, type ServerResponse } from "node:http";

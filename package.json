@@ -1,6 +1,6 @@
 {
   "name": "venuebox-matter",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": true,
   "description": "Matter bridge for the Bar Games box: scenes and TVs as Alexa / Google Home / Apple Home switches.",
   "type": "module",
@@ -14,7 +14,7 @@
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@bargames/sdk": "file:vendor/bargames-sdk-0.13.0.tgz",
+    "@bargames/sdk": "file:vendor/bargames-sdk-0.13.1.tgz",
     "@matter/main": "0.18.0"
   },
   "devDependencies": {

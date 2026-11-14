@@ -2,10 +2,10 @@
   "id": "matter",
   "name": "Matter (Alexa, Google Home, Apple Home)",
   "kind": "integration",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Your scenes and TVs as Matter switches: \"Alexa, turn on Bingo Night\" with no Home Assistant. Works with Alexa, Google Home, Apple Home and SmartThings.",
-  "image": "ghcr.io/thezigpc/venuebox-matter:0.1.1",
-  "sdk": { "version": "0.13.0", "level": 0 },
+  "image": "ghcr.io/thezigpc/venuebox-matter:0.1.2",
+  "sdk": { "version": "0.13.1", "level": 0 },
   "network": { "internet": false },
   "resources": { "memory": "256m", "cpus": 0.5 },
   "integration": {
