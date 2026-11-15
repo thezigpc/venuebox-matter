@@ -34,7 +34,7 @@ npm test                      # unit tests (node:test via tsx)
 npm run typecheck
 ```
 
-**Against the SDK's mock box** (SDK 0.13.1), which also has test controls on its gateway:
+**Against the SDK's mock box**, which also has test controls on its gateway (SDK 0.14.0):
 
 ```bash
 npx bargames mock-box .       # terminal 1: scenes and fake TVs, core on :7199, gateway on :7080
@@ -44,23 +44,18 @@ U=localhost:7080/__bargames/dev/integration
 curl $U                                   # streams, the last report, the catalog
 curl -X POST $U/action/pair-another       # press a report button
 curl -X POST $U/drop                      # drop the stream (the bridge reconnects and reports again)
+curl -X POST "$U/drop?for=20"             # box gone for 20 s: the devices go unreachable
 curl -X PUT $U/catalog -H 'content-type: application/json' -d '{"scenes":[...],"tvs":[...]}'
 curl -X DELETE $U/catalog                 # back to the pretend lists
 ```
 
-If another project is running a mock box too, use `--port` and `--core-port`. The mock box
-prints the pairing code; that's expected.
+TV power answers from the edited catalog: a TV marked `"online": false` refuses, so its switch
+goes back to off.
 
-**Against the fake core in `scripts/`**, for what the mock box can't do: keep the box down for
-a while (the devices go unreachable), and refuse TV power for a TV that's offline or has no
-power control in the edited catalog (the switch goes back):
-
-```bash
-npx tsx scripts/fake-core.ts                    # :7198
-BG_CORE_URL=http://127.0.0.1:7198 BG_GAME_TOKEN=dev-token BG_DATA_DIR=./.data npm run dev
-curl -X POST "localhost:7198/dev/down?s=20"
-curl -X PUT localhost:7198/dev/catalog -d @catalog.json
-```
+Several projects on one PC may run mock boxes: pick free ports with `--port` and
+`--core-port`, and stop only your own processes. A mock box started in the background stops
+when its stdin closes (`tail -f /dev/null | npx bargames mock-box .` keeps it up). It prints
+the pairing code; that's expected.
 
 **A test controller without a phone** (matter.js, in `scripts/controller.ts`). Each name is
 its own fabric, so two names test multi-admin:
